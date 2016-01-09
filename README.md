@@ -58,3 +58,14 @@ Click on the app directory to see the served directory.
 	}
 ]}
 ```
+
+## Server API
+
+### GET
+* /search (actually a POST in order to send search data)
+* /my_factoids
+* /candidates
+* /issues
+
+### POST
+* /update_factoids
