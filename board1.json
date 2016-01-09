@@ -1,0 +1,18 @@
+{"posts":[
+	{"id":"_id####",
+	"candidate":"Hillary Clinton",
+	"issue":"Foreign Policy",
+	"score":-5,
+	"parent": null,
+	"text": "Hillary really screwed up in Benghazi just like she would screw up the rest of the country",
+	"sources" : [{"source1":"www.cnn.com"}]
+	},
+	{"id": "_id#####",
+	"candidate":"Bernie Sanders",
+	"issues":"Economy",
+	"score": -2,
+	"parent": null,
+	"text": "Bernie thinks that there's more money in the world than there really is",
+	"sources":[ {"source1":"www.wsj.com"}]
+	}
+]}
