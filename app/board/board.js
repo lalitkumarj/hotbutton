@@ -8,8 +8,7 @@ angular.module('myApp.board', ['ngRoute'])
 	    controllerAs: 'board'
 	});
     }])
-
-    .controller('BoardCtrl', [function() {
-	this.posts = board1["posts"];
-	console.log()
+    .controller('BoardCtrl', ['$http', function($http) {
+	var self = this;
+	$http.get('/posts').success(function(data){self.posts = data["posts"]});
     }]);
