@@ -4,6 +4,10 @@ Requirements:
 - nodejs
 - mongodb
 
+Run 
+``npm install``
+ to install dependencies and then
+
 ``npm start``
 
 Click on the app directory to see the served directory.
