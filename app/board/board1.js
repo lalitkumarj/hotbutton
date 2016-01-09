@@ -1,3 +1,4 @@
+<<<<<<< HEAD:app/board/board1.js
 var board1 = {"posts":[
     {"_id":"1",
 	"candidate":"Hillary Clinton",
@@ -40,3 +41,68 @@ var board1 = {"posts":[
 	"sources":[{"source1":"www.foxnews.com"}]
     }
 ]}
+=======
+{
+    "posts": [
+        {
+            "_id": "1",
+            "candidate": "Hillary Clinton",
+            "issue": "Foreign Policy",
+            "parent": null,
+            "score": -5,
+            "sources": [
+                "www.cnn.com"
+            ],
+            "text": "Hillary really screwed up in Benghazi just like she would screw up the rest of the country"
+        },
+        {
+            "_id": "2",
+            "candidate": "Bernie Sanders",
+            "issue": "Economy",
+            "parent": null,
+            "score": -2,
+            "sources": [
+                "www.wsj.com"
+            ],
+            "text": "Bernie thinks that there's more money in the world than there really is"
+        },
+        {
+            "_id": "3",
+            "candidate": "Hillary Clinton",
+            "issue": "Personal Hygiene",
+            "parent": null,
+            "score": 5,
+            "sources": [
+                "www.bedbathandbeyond.com",
+                "http://www.indulgespa.net/"
+            ],
+            "text": "I heard she took a bath last Sunday, and I also took a bath on Sunday, so I think we're pretty much the same."
+        },
+        {
+            "_id": "4",
+            "candidate": "Donald Trump",
+            "issue": "Personal Hygiene",
+            "parent": null,
+            "score": -2,
+            "sources": [
+                "www.bbc.com",
+                "http://www.cnn.com"
+            ],
+            "text": "Obviously a shower man, ergo, untrustworthy"
+        },
+        {
+            "_id": "5",
+            "candidate": "Ted Cruz Jr.",
+            "issue": "Immigration",
+            "parent": null,
+            "score": 3,
+            "sources": [
+                {
+                    "source1": "www.foxnews.com"
+                }
+            ],
+            "text": "Seems to not want any immigrants, and immigrants make me sad."
+        }
+    ]
+}
+>>>>>>> 7d5bfd8330fdaeac0840400ffe3e81b1331f157d:board1.json

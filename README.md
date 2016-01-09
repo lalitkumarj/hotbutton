@@ -14,7 +14,7 @@ Click on the app directory to see the served directory.
 
 ## database model:
 
-``
+```
 {"posts":[
 	{"_id":"1",
 	"candidate":"Hillary Clinton",
@@ -57,4 +57,4 @@ Click on the app directory to see the served directory.
 	"sources":[{"source1":"www.foxnews.com"}]
 	}
 ]}
-``
+```
