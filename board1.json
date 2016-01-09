@@ -9,10 +9,36 @@
 	},
 	{"id": "_id#####",
 	"candidate":"Bernie Sanders",
-	"issues":"Economy",
+	"issue":"Economy",
 	"score": -2,
 	"parent": null,
 	"text": "Bernie thinks that there's more money in the world than there really is",
 	"sources":[ {"source1":"www.wsj.com"}]
+	},
+	{"id": "_id#####",
+	"candidate":"Hillary Clinton",
+	"issue":"Personal Hygiene",
+	"score": 5,
+	"parent": null,
+	"text": "I heard she took a bath last Sunday, and I also took a bath on Sunday, so I think we're pretty much the same.",
+	"sources":[{"source1":"www.bedbathandbeyond.com",
+				"source2":"http://www.indulgespa.net/"}]
+	},
+	{"id": "_id#####",
+	"candidate":"Donald Trump",
+	"issue":"Personal Hygiene",
+	"score": -2,
+	"parent": null,
+	"text": "Obviously a shower man, ergo, untrustworthy",
+	"sources":[{"source1":"www.bbc.com",
+				"source2":"http://www.cnn.com"}]
+	},
+	{"id":"_id######",
+	"candidate":"Ted Cruz Jr.",
+	"issue":"Immigration",
+	"score":3,
+	"parent":null,
+	"text": "Seems to not want any immigrants, and immigrants make me sad.",
+	"sources":[{"source1":"www.foxnews.com"}]
 	}
 ]}
