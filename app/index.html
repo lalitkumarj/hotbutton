@@ -53,36 +53,69 @@
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
   <script src="buttons.js"></script>
-
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+  
   <style>
     .float-wrap {
-    /* 816 = <number of floats> * (<float width> + 2 * <float border width>) */
-	  padding-left: 500px;
+    
+    margin-left: 500px;
     width: 600px;
-	  //border: 1px solid;
+    //border: 1px solid;
     overflow-x: scroll;
+    overflow: auto;
+    }
+    
+    .left-floater {
+    width: 300px;
+    height: 40px;
+    border: 1px solid;
+    float: left;
+    }
+    
+    .outer {
+    } 
 
-
-	  /* causes .float-wrap's height to match its child divs */
-	  overflow: auto;
-	  }
-	  .left-floater {
-	  width: 100px;
-	  height: 100px;
-	  border: 1px solid;
-	  float: left;
-	  }
-	  .outer {
-      } 
-
-    .btn{
-      padding-left: 500px
+    .button{
+    margin-left: 500px
     }  
 
   </style>
-  <a id="add_cand" class="btn">Add candidate</a>
-  <div class="outer">
-    <div class="float-wrap">
+
+  <script>                                                          
+    var students = [{name:'Hillary Clinton', id:'https://www.hillaryclinton.com/'},                 
+    {name:'Bernie Sanders', id:'https://go.berniesanders.com/page/content/splash'},                                  
+    {name:'J Bush', id:'https://jeb2016.com/?lang=en'}
+    ];                                  
+
+    function HelloController($scope) {                                    
+
+    }
+    
+    
+    function StudentListController($scope) {                        
+    $scope.students = students;
+
+    $scope.greeting = { text: 'Hello' };
+    
+    $scope.width = students.length*1000;
+    //$scope.bgColor = 'red';
+    
+    $scope.insertTom = function () {
+    if (students.length < 25)
+			  $scope.students.splice(students.length, 0, {name:$scope.greeting.text, id:'4'});
+    };                                                            
+    }                                                               
+  </script>
+
+
+
+  <div class="outer" ng-controller='StudentListController'>
+    <button class="button" ng-click="insertTom()">Add candidate</button>
+    <input ng-model='greeting.text'>
+    <div ng-app class="float-wrap" ng-style="{ 'width' : width}">
+	<div ng-repeat='student in students' class='left-floater'>                          
+	  <a ng-href='{{student.id}}'>{{student.name}}</a>
+	</div>                                                         
     </div>
   </div>
 </body>
