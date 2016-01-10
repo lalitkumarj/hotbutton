@@ -127,14 +127,14 @@
       $scope.students = students;
       // $scope.posts = posts
       $scope.greeting = { text: 'JULIUS CAESAR'};    
-      $scope.width = students.length*1000;
+      $scope.width = students.length*2000;
       $scope.index = $scope.student 
       
 
     
       $scope.insertTom = function () {
 
-        if (students.length < 25)
+        if (students.length < 20)
              $scope.students.push({name:$scope.greeting.text, id:students.length + 1, posts:[]});
       };
 
