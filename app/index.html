@@ -78,6 +78,10 @@
     margin-left: 500px
     }
 
+    .button1{
+    margin-top: 20px
+    }
+
     .post{
       margin-top: 10px
     }
@@ -166,21 +170,21 @@
 	
 	<div ng-repeat='post in student.posts'>
 	  <div class="post">     
-      <p> {{post}}</p>
-    </div>
+	    <p> {{post}}</p>
+	  </div>
+	</div>
+		
+	<div >
+	  <button class ="button1" ng-click="insertPost($index)">Add Post</button>
 	</div>
 
 	<div >
-	  <button ng-click="removeCandidate($index)">Delete Candidate</button>
+	  <button class ="button1" ng-click="removeCandidate($index)">Delete Candidate</button>
 	</div>
-
-  <div >
-    <button ng-click="insertPost($index)">Add Post</button>
-  </div>
-
-
+	
       </div>
     </div>
   </div>
+  
 </body>
 </html>
