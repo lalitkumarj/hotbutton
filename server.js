@@ -1,13 +1,16 @@
 var express = require('express');
-var app = express();
+app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 server.listen(8000);
     
 app.use(express.static(__dirname + '/app'));
+require('./controllers/posts.js');
+
+
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/hotbutton');
-var db = mongoose.connection;
+db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("Connected to Mongodb");
@@ -48,3 +51,13 @@ var SourceSchema = new mongoose.Schema({
     updated: Date
 });
 var Source = mongoose.model('Source', SourceSchema);
+
+
+var CandidateSchema = new mongoose.Schema({
+    name: String,
+    picture: String
+    updated: Date
+});
+var Source = mongoose.model('Candidate', SourceSchema);
+
+
