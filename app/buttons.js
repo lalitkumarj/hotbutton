@@ -18,6 +18,7 @@ $(document).ready(function(){
 	// 	});
 
 	this_string = "<div class=left-floater id=col"+i+">"+ button  + "</div>"
+	//new_string = "<div ng-controller='StudentListController' class=left-floater><ul><li ng-repeat='student in students'><a ng-href='/student/view/{{student.id}}'>{{student.name}}</a></li></ul><button ng-click=insertTom()>Insert Tom</button></div>"
 	$(".float-wrap").append($(this_string));
 	i++;
 

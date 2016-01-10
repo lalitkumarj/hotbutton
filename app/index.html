@@ -52,7 +52,6 @@
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
-  <script src="buttons.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
   
   <style>
@@ -66,8 +65,8 @@
     }
     
     .left-floater {
-    width: 300px;
-    height: 40px;
+    width: 200px;
+    height:400px;
     border: 1px solid;
     float: left;
     }
@@ -82,29 +81,53 @@
   </style>
 
   <script>                                                          
-    var students = [{name:'Hillary Clinton', id:'https://www.hillaryclinton.com/'},                 
-    {name:'Bernie Sanders', id:'https://go.berniesanders.com/page/content/splash'},                                  
-    {name:'J Bush', id:'https://jeb2016.com/?lang=en'}
+    var students =
+    [
+    {name:'Hillary Clinton', id:1, posts:['messi']},                 
+    {name:'Bernie Sanders', id:2, posts:["Bernie showers too much"]}, 
+    {name:'J Bush', id:3, posts:['ronaldo']}
+
     ];                                  
 
-    function HelloController($scope) {                                    
-
-    }
+    // var posts = [
+    // {name:1, id:'Lionel Messi'},
+    // {name:2, id:'Cristiano Ronaldo'},
+    // {name:3, id:'David Beckham'}
+    // ]
     
+    dictionary = {'Hello':'http://www.skysports.com/'}
     
     function StudentListController($scope) {                        
-    $scope.students = students;
+      $scope.students = students;
+      // $scope.posts = posts
+      $scope.greeting = { text: 'JULIUS CAESAR', link: 'http://www.espnfc.us/' };    
+      $scope.width = students.length*1000;
 
-    $scope.greeting = { text: 'Hello' };
     
-    $scope.width = students.length*1000;
-    //$scope.bgColor = 'red';
-    
-    $scope.insertTom = function () {
-    if (students.length < 25)
-			  $scope.students.splice(students.length, 0, {name:$scope.greeting.text, id:'4'});
-    };                                                            
-    }                                                               
+      $scope.insertTom = function () {
+
+        if( $scope.greeting.text in dictionary){  
+            $scope.greeting.link = dictionary[$scope.greeting.text] 
+        }  
+        else{
+            $scope.greeting.link =  'http://www.espnfc.us/' 
+        }
+
+        if (students.length < 25)
+             $scope.students.push({name:$scope.greeting.text, id:students.length + 1, posts:[]});
+      };
+
+      $scope.insertPost = function(i) {
+        index = i.currentTarget.id -1 
+        console.log(index)
+
+        console.log($scope.students[index].posts.push("OMG IT WORKS!!"))
+
+
+
+      };                
+    }
+			    			    
   </script>
 
 
@@ -113,9 +136,19 @@
     <button class="button" ng-click="insertTom()">Add candidate</button>
     <input ng-model='greeting.text'>
     <div ng-app class="float-wrap" ng-style="{ 'width' : width}">
-	<div ng-repeat='student in students' class='left-floater'>                          
-	  <a ng-href='{{student.id}}'>{{student.name}}</a>
-	</div>                                                         
+      <div ng-repeat='student in students' class='left-floater' id={{student.id}}>
+	  
+    <h4>{{student.name}}</h4>
+	
+	<div ng-repeat='post in student.posts'>
+	  <p> {{post}}</p>
+	</div>
+
+	<div >
+	  <button ng-click="insertPost($event)" id={{student.id}}>Add post</button>
+	</div>
+	
+      </div>
     </div>
   </div>
 </body>
