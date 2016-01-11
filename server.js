@@ -33,29 +33,26 @@ var FactoidSchema = new mongoose.Schema({
     score: String,
     parent: String,
     text: String,
-    sources: [mongoose.Schema.Types.ObjectId],
-    updated: Date
+    sources: [mongoose.Schema.Types.ObjectId]
 });
 var Factoid = mongoose.model('Factoid', FactoidSchema);
 
 
 var BoardSchema = new mongoose.Schema({
-    posts: [mongoose.Schema.Types.ObjectId],
-    updated: Date
+    posts: [mongoose.Schema.Types.ObjectId]
 });
 var Board = mongoose.model('Board', BoardSchema);
 
 
 var SourceSchema = new mongoose.Schema({
-    link: [mongoose.Schema.Types.ObjectId],
-    updated: Date
+    link: [mongoose.Schema.Types.ObjectId]
 });
 var Source = mongoose.model('Source', SourceSchema);
 
 
 var CandidateSchema = new mongoose.Schema({
     name: String,
-    picture: String
+    picture: String,
     updated: Date
 });
 var Source = mongoose.model('Candidate', SourceSchema);
