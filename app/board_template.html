@@ -1,0 +1,9 @@
+<div class="board">
+  <div ng-repeat="candidate in candidates" class="candidate-column">                          
+    <candidate data="candidate"></candidate>
+    <div ng-repeat="post in processed_posts[candidate.name]">
+      <post data="post"></post>
+    </div>
+  </div>
+</div>
+

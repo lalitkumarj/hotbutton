@@ -1,0 +1,45 @@
+* {
+	font-family: "Georgia";
+}
+
+.board-canvas {
+	width:100%;
+	height: auto;
+	border-radius: 20px;
+}
+
+
+.board {
+	overflow-x: scroll;
+	overflow-y: hidden;
+	padding: 10px; 
+	width:100%;
+	height:1000px;	
+	white-space: nowrap;
+}
+
+.candidate-column {
+	vertical-align: top;
+	padding: 10px;
+	width: 300px;
+	height: auto;
+	border-radius: 5px;
+	box-shadow: 0 1px 2px 0;
+	background-color: #e2e4e6;
+	display: inline-block;
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+
+.post {
+	width: 98%;
+	height: auto;
+	min-height: 50px;
+	white-space: normal;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	box-shadow: 0 1px 2px 0;
+	background-color: white;
+	padding: 5px;
+}

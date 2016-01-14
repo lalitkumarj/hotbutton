@@ -10,15 +10,18 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/main.css">
-  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script> 
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
-  <script src="board/board1.js"></script>
+  <script src="posts.js"></script>
  </head>
 <body>
   <!--[if lt IE 7]>
@@ -38,52 +41,141 @@
   
   <script>
     var hotButtonApp = angular.module('hotButtonApp', []);
-
     
-    var candidates = [{name:'Hillary Clinton', id:'https://www.hillaryclinton.com/'},                 
-	{name:'Bernie Sanders', id:'https://go.berniesanders.com/page/content/splash'},                                  
-	{name:'Jeb Bush', id:'https://jeb2016.com/?lang=en'}
+    var candidates = [
+	{
+	    name:'Hillary Clinton',
+	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Secretary_Clinton_8x10_2400_1.jpg/800px-Secretary_Clinton_8x10_2400_1.jpg'
+	},         
+	{
+	    name:'Bernie Sanders',
+	    image:'https://upload.wikimedia.org/wikipedia/commons/d/de/Bernie_Sanders.jpg'
+	},                                  
+	{
+	    name:'Jeb Bush',
+	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Jeb_Bush_at_Southern_Republican_Leadership_Conference_May_2015_by_Vadon_02.jpg/800px-Jeb_Bush_at_Southern_Republican_Leadership_Conference_May_2015_by_Vadon_02.jpg'
+	},
+	{
+	    name:'Donald Trump',
+	    image:'https://upload.wikimedia.org/wikipedia/commons/b/b3/Donald_August_19_%28cropped%29.jpg'
+	},
+	{
+	    name:'Ted Cruz',
+	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ted_Cruz%2C_official_portrait%2C_113th_Congress.jpg/1280px-Ted_Cruz%2C_official_portrait%2C_113th_Congress.jpg'
+	}
     ];                                  
 
-        
+    
     hotButtonApp.controller('CandidateListController', function($scope) {                        
 	$scope.candidates = candidates;
 	$scope.greeting = { text: 'Hello' };
-	$scope.posts = {};
-	for(var i=0; i < board1["posts"].length; i++){
-	    if( !$scope.posts[board1["posts"][i].candidate]){
-		$scope.posts[board1["posts"][i].candidate] = []; 
+	$scope.posts = posts;
+	$scope.processed_posts = {};
+	$scope.$watch('posts', function(newValue, oldValue) {
+	    for(var i=0; i < $scope.posts.length; i++){
+		if( !$scope.processed_posts[$scope.posts[i].candidate]){
+		    $scope.processed_posts[$scope.posts[i].candidate] = []; 
+		}
+		$scope.processed_posts[$scope.posts[i].candidate].push($scope.posts[i]);
 	    }
-	    $scope.posts[board1["posts"][i].candidate].push(board1["posts"][i]);
-	    console.log(board1["posts"][i].candidate);
-	}
-	console.log('posts', $scope.posts);
-	//$scope.width = candidates.length*1000;
+	});
+	
 	$scope.insertCandidate = function () {
 	    if (candidates.length < 25){
 		$scope.candidates.splice(candidates.length, 0, {name:$scope.greeting.text, id:'4'});
-	    };                                                            
-	}
-    });                                                               
+	    }                                                            
+	};
+
+	$scope.updateCandidate = function() {
+	    for(var i=0;i<$scope.posts.length;i++){
+		$scope.posts[i].text = "foo bar";
+	    }
+	};
+    });
+
+    hotButtonApp.directive('board', function(){
+	return{
+	    restrict: 'E',
+	    scope: true,
+	    templateUrl: 'board_template.html',
+	    link: function(scope, element, attrs) {
+	    }
+	};
+    });
+    
+    hotButtonApp.directive('candidate', function() {
+	return{
+	    restrict: 'E',
+	    scope: {
+		data: '=data'
+	    },
+	    templateUrl: 'candidate_template.html',
+	    link: function(scope, element, attrs) {
+		scope.candidate = scope.data
+		console.log('candidate', scope.candidate, typeof(scope.candidate));
+	    }
+	};
+    });
+
+    hotButtonApp.directive('post', function() {
+	return{
+	    restrict: 'E',
+	    scope: {
+		data: '=data'
+	    },
+	    templateUrl: 'post_template.html',
+	    link: function(scope, element, attrs) {
+		scope.post = scope.data
+		console.log('post', scope.post, typeof(scope.post));
+	    }
+	};
+    });
   </script>
 
 
+  
+  
   <div ng-controller='CandidateListController'>
     <button class="button" ng-click="insertCandidate()">Add candidate</button>
+    <button class="button" ng-click="updateCandidate()">Update candidate</button>
     <input ng-model='greeting.text'>
     <br>
     <div class="board-canvas">
-      <div ng-app class="board">
-	<div ng-repeat="candidate in candidates" class="candidate-column">                          
-	  <h2>{{candidate.name}}</h2>
-	  <div ng-repeat="post in posts[candidate.name]">
-	    <div class="post">{{post.text}}</div> 
-	  </div>
-	</div>                                                         
-      </div>
+      <board></board>
     </div>
   </div>
 
 </body>
 </html>
+<!--
+     It would be nice if all you ever have to sync is the posts by a given user and not the candidates.
+     
+   -->
+
 <!-- -ng-style="{ 'width' : width}" -->
+<!-- - 	/* for(var i=0; i < board1["posts"].length; i++){
+     if( !$scope.posts[board1["posts"][i].candidate]){
+     $scope.posts[board1["posts"][i].candidate] = []; 
+     }
+     $scope.posts[board1["posts"][i].candidate].push(board1["posts"][i]);
+     console.log(board1["posts"][i].candidate);
+     }
+     console.log('posts', $scope.posts); */
+     //$scope.width = candidates.length*1000;
+ -->
+<!-- -	    /* link: function(scope, element, attrs) {
+     console.log(scope.data)
+     scope.data = JSON.parse(scope.data);
+     console.log(scope.data)
+     scope.candidates = JSON.parse(scope.data.candidates);
+     scope.posts_list = JSON.parse(scope.data.posts);
+     scope.posts = {};
+     for(var i=0; i < scope.posts_list.length; i++){
+     if( !scope.posts[scope.posts_list[i].candidate]){
+     scope.posts[scope.posts_list[i].candidate] = []; 
+     }
+     scope.posts[scope.posts_list[i].candidate].push(scope.posts_list[i]);
+     }
+     console.log(scope.posts);
+     } */
+ -->
