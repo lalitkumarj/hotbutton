@@ -10,14 +10,14 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">  
-
+  <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css">
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script> 
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
-  <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
@@ -40,56 +40,49 @@
   </style>
   
   <script>
-    var hotButtonApp = angular.module('hotButtonApp', []);
+    var hotButtonApp = angular.module('hotButtonApp', ['ui.bootstrap']);
     
-    var candidates = [
-	{
+    var full_candidates = {
+	'Hillary Clinton':{
 	    name:'Hillary Clinton',
 	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Secretary_Clinton_8x10_2400_1.jpg/800px-Secretary_Clinton_8x10_2400_1.jpg'
 	},         
-	{
+	'Bernie Sanders':{
 	    name:'Bernie Sanders',
 	    image:'https://upload.wikimedia.org/wikipedia/commons/d/de/Bernie_Sanders.jpg'
 	},                                  
-	{
+	'Jeb Bush':{
 	    name:'Jeb Bush',
 	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Jeb_Bush_at_Southern_Republican_Leadership_Conference_May_2015_by_Vadon_02.jpg/800px-Jeb_Bush_at_Southern_Republican_Leadership_Conference_May_2015_by_Vadon_02.jpg'
 	},
-	{
+	'Donald Trump':{
 	    name:'Donald Trump',
 	    image:'https://upload.wikimedia.org/wikipedia/commons/b/b3/Donald_August_19_%28cropped%29.jpg'
 	},
-	{
+	'Ted Cruz':{
 	    name:'Ted Cruz',
 	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ted_Cruz%2C_official_portrait%2C_113th_Congress.jpg/1280px-Ted_Cruz%2C_official_portrait%2C_113th_Congress.jpg'
 	}
-    ];                                  
-
+    };                                  
     
-    hotButtonApp.controller('CandidateListController', function($scope) {                        
-	$scope.candidates = candidates;
-	$scope.greeting = { text: 'Hello' };
+    hotButtonApp.controller('CandidateListController', function($scope, $uibModal) {                        
+	$scope.full_candidates = full_candidates;
+	$scope.candidates = [];
 	$scope.posts = posts;
-	$scope.processed_posts = {};
-	$scope.$watch('posts', function(newValue, oldValue) {
-	    for(var i=0; i < $scope.posts.length; i++){
-		if( !$scope.processed_posts[$scope.posts[i].candidate]){
-		    $scope.processed_posts[$scope.posts[i].candidate] = []; 
-		}
-		$scope.processed_posts[$scope.posts[i].candidate].push($scope.posts[i]);
+	$scope.add_candidate = function (name) {
+	    if(!(name in $scope.posts)){
+		$scope.posts[name]=[];
 	    }
-	});
-	
-	$scope.insertCandidate = function () {
-	    if (candidates.length < 25){
-		$scope.candidates.splice(candidates.length, 0, {name:$scope.greeting.text, id:'4'});
-	    }                                                            
 	};
 
-	$scope.updateCandidate = function() {
-	    for(var i=0;i<$scope.posts.length;i++){
-		$scope.posts[i].text = "foo bar";
-	    }
+	$scope.openAddCandidateModal = function () {
+	    var modalInstance = $uibModal.open({
+		animation: true,
+		templateUrl: 'AddCandidateModal.html',
+		controller: 'ModalInstanceCtrl',
+		bindToControlle:true,
+		scope:$scope
+	    });
 	};
     });
 
@@ -112,7 +105,6 @@
 	    templateUrl: 'candidate_template.html',
 	    link: function(scope, element, attrs) {
 		scope.candidate = scope.data
-		console.log('candidate', scope.candidate, typeof(scope.candidate));
 	    }
 	};
     });
@@ -126,20 +118,41 @@
 	    templateUrl: 'post_template.html',
 	    link: function(scope, element, attrs) {
 		scope.post = scope.data
-		console.log('post', scope.post, typeof(scope.post));
 	    }
 	};
     });
+
+    hotButtonApp.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
+	$scope.ok = function () {
+	    $uibModalInstance.close();
+	};
+    });
+
+
   </script>
 
 
   
   
   <div ng-controller='CandidateListController'>
-    <button class="button" ng-click="insertCandidate()">Add candidate</button>
-    <button class="button" ng-click="updateCandidate()">Update candidate</button>
-    <input ng-model='greeting.text'>
-    <br>
+    <button class="button" ng-click="openAddCandidateModal()"">Add candidate</button>
+    
+    <script type="text/ng-template" id="AddCandidateModal.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Choose a candidate</h3>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li ng-repeat="(name, candidate) in full_candidates">
+	    <candidate data="candidate" ng-click="add_candidate(name)"></candidate>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+      </div>
+    </script>
+
     <div class="board-canvas">
       <board></board>
     </div>

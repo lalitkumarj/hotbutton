@@ -1,20 +1,20 @@
 var posts = {
-    "Hillar Clinton":[{"_id":"1",
+    "Hillary Clinton":[{"_id":"1",
 	"candidate":"Hillary Clinton",
 	"issue":"Foreign Policy",
 	"score":-5,
 	"parent": null,
 	"text": "Hillary really screwed up in Benghazi just like she would screw up the rest of the country",
 	"sources" : ["www.cnn.com"]
-    },    {"_id": "3",
+    },
+	{"_id": "3",
 	"candidate":"Hillary Clinton",
 	"issue":"Personal Hygiene",
 	"score": 5,
 	"parent": null,
 	"text": "I heard she took a bath last Sunday, and I also took a bath on Sunday, so I think we're pretty much the same.",
 	"sources":["www.bedbathandbeyond.com", "http://www.indulgespa.net/"]
-    }
-    ],
+    }],
     "Bernie Sanders":[{"_id": "2",
 	"candidate":"Bernie Sanders",
 	"issue":"Economy",
