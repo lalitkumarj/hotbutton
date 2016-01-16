@@ -66,7 +66,7 @@
 	}
     };                                  
     
-    hotButtonApp.controller('CandidateListController', function($scope, $uibModal) {                        
+    hotButtonApp.controller('CandidateListController', ['$scope', '$uibModal', 'addPostModal', function($scope, $uibModal, addPostModal) {                     
 	$scope.full_candidates = full_candidates;
 	$scope.candidates = [];
 	$scope.posts = posts;
@@ -85,19 +85,15 @@
 		scope:$scope
 	    });
 	};
-
+	
 	$scope.openAddPostModal = function () {
-	    addPostModal();
-	    /* var modalInstance = $uibModal.open({
-	       animation: true,
-	       templateUrl: 'AddPostModal.html',
-	       controller: 'DefaultModalInstanceCtrl',
-	       bindToControlle:true,
-	       scope:$scope
-	       }); */
+	    var modalInstance = addPostModal;
+	    modalInstance.open({
+		scope: $scope,
+		mode: 'new'
+	    });
 	};
 
-	
 	$scope.add_post = function(post){
 	    console.log("add_post", post);
 	    
@@ -115,36 +111,37 @@
 	    }
 	    $scope.posts[post.candidate].push(post);
 	    console.log($scope.posts);
-	} 
-	
-    });
+	} 	
+    }]);
 
-    hotButtonApp.factory('addPostModal', function() {
+    hotButtonApp.factory('addPostModal', ['$uibModal', function($uibModal) {
 	var modal = {};
-	modal.open = $uibModal.open({
-	    animation: true,
-	    templateUrl: 'AddPostModal.html',
-	    controller: 'AddPostModalInstanceCtrl',
-	    bindToControlle:true,
-	    scope:$scope
-	
+	modal.open = function(params){
+	    var modalInstance = $uibModal.open({
+		animation: true,
+		templateUrl: 'AddPostModal.html',
+		controller: 'AddPostModalInstanceCtrl',
+		bindToControlle:true,
+		scope: params.scope});
+	    modalInstance.post = params.post || {};
+	    modalInstance.mode = params.mode || 'new';
+	};
 	return modal;
-    });
-    
-    hotButtonApp.directive('board', function($uibModal){
+    }]);
+
+    hotButtonApp.directive('board', function($uibModal, addPostModal){
 	return{
 	    restrict: 'E',
 	    scope: true,
 	    templateUrl: 'board_template.html',
 	    link: function(scope, element, attrs) {
-		scope.openCandidateAddPostModal = function(candidate){
-		    var modalInstance = $uibModal.open({
-			animation: true,
-			templateUrl: 'CandidateAddPostModal.html',
-			controller: 'CandidateAddPostModalInstanceCtrl',
-			scope:scope
+		scope.addPostCandidate = function(candidate){
+		    var modalInstance = addPostModal;
+		    modalInstance.open({
+			scope: scope,
+			mode: 'new',
+			post: {'candidate': candidate}
 		    });
-		    modalInstance.candidate = candidate;
 		}
 	    }
 	};
@@ -172,6 +169,25 @@
 	    templateUrl: 'post_template.html',
 	    link: function(scope, element, attrs) {
 		scope.post = scope.data
+		var el = element[0];		
+		el.addEventListener(
+		    'dragstart',
+		    function(e) {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('post', scope.post);
+			return false;
+		    },
+		    false
+		);
+		
+		el.addEventListener(
+		    'dragend',
+		    function(e) {
+			console.log("dragend");
+			return false;
+		    },
+		    false
+		);
 	    }
 	};
     });
@@ -190,9 +206,7 @@
 		if((!scope.post && (scope.mode == 'edit'|| scope.mode=='clone'))|| !scope.mode){
 		    scope.mode == scope.mode||'new';
 		}
-
-		scope.n_post = scope.post||{};
-		
+		scope.n_post = scope.post||{};		
 		if(scope.mode == 'edit'){
 		    scope.n_post._id = scope.post._id;
 		    scope.n_post.parent = scope.post.parent;
@@ -203,7 +217,6 @@
 		    scope.n_post._id = make_id();
 		    scope.n_post.parent = null;
 		}
-		
 		scope.save_post = function(){
 		    scope.add_post({'n_post':scope.n_post});
 		    scope.callback({'n_post':scope.n_post});
@@ -212,7 +225,6 @@
 	};
     });
 
-    
     hotButtonApp.controller('AddCandidateModalInstanceCtrl', function ($scope, $uibModalInstance) {
 	$scope.ok = function () {
 	    $uibModalInstance.close();
@@ -226,18 +238,11 @@
 	    $uibModalInstance.close();
 	};
     });
-
-
   </script>
-
-
-  
   
   <div ng-controller='CandidateListController'>
     <button class="button" ng-click="openAddCandidateModal()"">Add candidate</button>
     <button class="button" ng-click="openAddPostModal()"">Add post</button>
-
-
     <script type="text/ng-template" id="AddCandidateModal.html">
       <div class="modal-header">
         <h3 class="modal-title">Choose a candidate</h3>
