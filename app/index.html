@@ -22,6 +22,7 @@
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
   <script src="posts.js"></script>
+  <script src="utils.js"></script>
  </head>
 <body>
   <!--[if lt IE 7]>
@@ -79,19 +80,72 @@
 	    var modalInstance = $uibModal.open({
 		animation: true,
 		templateUrl: 'AddCandidateModal.html',
-		controller: 'ModalInstanceCtrl',
+		controller: 'AddCandidateModalInstanceCtrl',
 		bindToControlle:true,
 		scope:$scope
 	    });
 	};
+
+	$scope.openAddPostModal = function () {
+	    addPostModal();
+	    /* var modalInstance = $uibModal.open({
+	       animation: true,
+	       templateUrl: 'AddPostModal.html',
+	       controller: 'DefaultModalInstanceCtrl',
+	       bindToControlle:true,
+	       scope:$scope
+	       }); */
+	};
+
+	
+	$scope.add_post = function(post){
+	    console.log("add_post", post);
+	    
+	    if(!(post.candidate in $scope.posts)){
+		$scope.posts[post.candidate] = [];
+		$scope.posts[post.candidate].push(post);
+	    }
+	    var posts = $scope.posts[post.candidate];
+	    console.log("cand posts", posts);
+	    for(var i=0; i < posts.length; i++){
+		if(posts[i]._id == post._id){
+		    posts[i] = post;
+		    return;
+		}
+	    }
+	    $scope.posts[post.candidate].push(post);
+	    console.log($scope.posts);
+	} 
+	
     });
 
-    hotButtonApp.directive('board', function(){
+    hotButtonApp.factory('addPostModal', function() {
+	var modal = {};
+	modal.open = $uibModal.open({
+	    animation: true,
+	    templateUrl: 'AddPostModal.html',
+	    controller: 'AddPostModalInstanceCtrl',
+	    bindToControlle:true,
+	    scope:$scope
+	
+	return modal;
+    });
+    
+    hotButtonApp.directive('board', function($uibModal){
 	return{
 	    restrict: 'E',
 	    scope: true,
 	    templateUrl: 'board_template.html',
 	    link: function(scope, element, attrs) {
+		scope.openCandidateAddPostModal = function(candidate){
+		    var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'CandidateAddPostModal.html',
+			controller: 'CandidateAddPostModalInstanceCtrl',
+			scope:scope
+		    });
+		    modalInstance.candidate = candidate;
+		}
 	    }
 	};
     });
@@ -100,7 +154,7 @@
 	return{
 	    restrict: 'E',
 	    scope: {
-		data: '=data'
+		data: '='
 	    },
 	    templateUrl: 'candidate_template.html',
 	    link: function(scope, element, attrs) {
@@ -112,8 +166,8 @@
     hotButtonApp.directive('post', function() {
 	return{
 	    restrict: 'E',
-	    scope: {
-		data: '=data'
+	    scope:{
+		data: '='
 	    },
 	    templateUrl: 'post_template.html',
 	    link: function(scope, element, attrs) {
@@ -122,7 +176,52 @@
 	};
     });
 
-    hotButtonApp.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance) {
+    hotButtonApp.directive('postEditor', function() {
+	return{
+	    restrict: 'E',
+	    scope: {
+		mode: '@',
+		post: '=',
+		add_post: '&addPost',
+		callback: '&callback'
+	    },
+	    templateUrl: 'post_editor_template.html',
+	    link: function(scope, element, attrs) {
+		if((!scope.post && (scope.mode == 'edit'|| scope.mode=='clone'))|| !scope.mode){
+		    scope.mode == scope.mode||'new';
+		}
+
+		scope.n_post = scope.post||{};
+		
+		if(scope.mode == 'edit'){
+		    scope.n_post._id = scope.post._id;
+		    scope.n_post.parent = scope.post.parent;
+		} else if(scope.mode == 'clone'){
+		    scope.n_post._id = make_id();
+		    scope.n_post.parent = scope.post._id;
+		} else if(scope.mode == 'new'){
+		    scope.n_post._id = make_id();
+		    scope.n_post.parent = null;
+		}
+		
+		scope.save_post = function(){
+		    scope.add_post({'n_post':scope.n_post});
+		    scope.callback({'n_post':scope.n_post});
+		}
+	    }
+	};
+    });
+
+    
+    hotButtonApp.controller('AddCandidateModalInstanceCtrl', function ($scope, $uibModalInstance) {
+	$scope.ok = function () {
+	    $uibModalInstance.close();
+	};
+    });
+
+    hotButtonApp.controller('AddPostModalInstanceCtrl', function ($scope, $uibModalInstance) {
+	$scope.post = $uibModalInstance.post;
+	$scope.mode = $uibModalInstance.mode;
 	$scope.ok = function () {
 	    $uibModalInstance.close();
 	};
@@ -136,7 +235,9 @@
   
   <div ng-controller='CandidateListController'>
     <button class="button" ng-click="openAddCandidateModal()"">Add candidate</button>
-    
+    <button class="button" ng-click="openAddPostModal()"">Add post</button>
+
+
     <script type="text/ng-template" id="AddCandidateModal.html">
       <div class="modal-header">
         <h3 class="modal-title">Choose a candidate</h3>
@@ -144,7 +245,7 @@
       <div class="modal-body">
         <ul>
           <li ng-repeat="(name, candidate) in full_candidates">
-	    <candidate data="candidate" ng-click="add_candidate(name)"></candidate>
+	    <candidate data="candidate" ng-click="ok(); add_candidate(name);"></candidate>
           </li>
         </ul>
       </div>
@@ -153,6 +254,16 @@
       </div>
     </script>
 
+    <script type="text/ng-template" id="AddPostModal.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Add a post</h3>
+      </div>
+      <div class="modal-body">
+	<post-editor post="post" mode="mode"  add-post="add_post(n_post)" callback="ok()"></post-editor>
+      </div>
+    </script>
+
+
     <div class="board-canvas">
       <board></board>
     </div>
@@ -160,35 +271,3 @@
 
 </body>
 </html>
-<!--
-     It would be nice if all you ever have to sync is the posts by a given user and not the candidates.
-     
-   -->
-
-<!-- -ng-style="{ 'width' : width}" -->
-<!-- - 	/* for(var i=0; i < board1["posts"].length; i++){
-     if( !$scope.posts[board1["posts"][i].candidate]){
-     $scope.posts[board1["posts"][i].candidate] = []; 
-     }
-     $scope.posts[board1["posts"][i].candidate].push(board1["posts"][i]);
-     console.log(board1["posts"][i].candidate);
-     }
-     console.log('posts', $scope.posts); */
-     //$scope.width = candidates.length*1000;
- -->
-<!-- -	    /* link: function(scope, element, attrs) {
-     console.log(scope.data)
-     scope.data = JSON.parse(scope.data);
-     console.log(scope.data)
-     scope.candidates = JSON.parse(scope.data.candidates);
-     scope.posts_list = JSON.parse(scope.data.posts);
-     scope.posts = {};
-     for(var i=0; i < scope.posts_list.length; i++){
-     if( !scope.posts[scope.posts_list[i].candidate]){
-     scope.posts[scope.posts_list[i].candidate] = []; 
-     }
-     scope.posts[scope.posts_list[i].candidate].push(scope.posts_list[i]);
-     }
-     console.log(scope.posts);
-     } */
- -->
