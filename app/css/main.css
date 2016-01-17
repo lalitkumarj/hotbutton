@@ -2,10 +2,34 @@
 	font-family: "Georgia";
 }
 
-.board-canvas {
+.page_container {
 	width:100%;
+	height:auto;
+	white-space: nowrap;
+	display:inline-block;
+}
+
+.board-canvas {
 	height: auto;
+	width: 80%;
+	margin-left:20px;
 	border-radius: 20px;
+	white-space: nowrap;
+	display:inline-block;
+}
+
+
+.feed {
+	vertical-align: top;
+	padding: 10px;
+	width: 300px;
+	height: auto;
+	border-radius: 5px;
+	box-shadow: 0 1px 2px 0;
+	background-color: #a2e4e6;
+	display: inline-block;
+	margin-right: 10px;
+	margin-left: 10px;
 }
 
 
@@ -17,6 +41,7 @@
 	height:1000px;	
 	white-space: nowrap;
 }
+
 
 .candidate-column {
 	vertical-align: top;
@@ -42,4 +67,19 @@
 	box-shadow: 0 1px 2px 0;
 	background-color: white;
 	padding: 5px;
+}
+
+.add_post {
+	width: 98%;
+	background-color: #e2e4e6;
+	height: auto;
+	min-height: 50px;
+	white-space: normal;
+	border-radius: 5px;
+	border-style: dashed;
+	margin-bottom: 10px;
+	padding: 5px;
+	text-align:center;
+	text-transform: uppercase;
+	text-shadow: 1px 1px #a9a9a9;
 }

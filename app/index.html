@@ -11,13 +11,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css">
-  
+  <!-- https://github.com/angular-ui/ui-sortable -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="bower_components/jquery-ui/jquery-ui.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script> 
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="bower_components/angular-ui-sortable/sortable.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
@@ -41,7 +43,7 @@
   </style>
   
   <script>
-    var hotButtonApp = angular.module('hotButtonApp', ['ui.bootstrap']);
+    var hotButtonApp = angular.module('hotButtonApp', ['ui.bootstrap', 'ui.sortable']);
     
     var full_candidates = {
 	'Hillary Clinton':{
@@ -69,6 +71,7 @@
     hotButtonApp.controller('CandidateListController', ['$scope', '$uibModal', 'addPostModal', function($scope, $uibModal, addPostModal) {                     
 	$scope.full_candidates = full_candidates;
 	$scope.candidates = [];
+	$scope.feed_posts = feed_posts;
 	$scope.posts = posts;
 	$scope.add_candidate = function (name) {
 	    if(!(name in $scope.posts)){
@@ -94,6 +97,26 @@
 	    });
 	};
 
+	$scope.feedSortableOptions = {
+	    connectWith: '.cand_post_list',
+	    update: function(ev, ui) {
+		var originNgModel = ui.item.sortable.sourceModel;
+		var targetNgModel = ui.item.sortable.droptargetModel;
+		var itemModel = originNgModel[ui.item.sortable.index];
+		for(var k in $scope.posts){
+		    console.log(k)
+		    if(targetNgModel == $scope.posts[k]){
+			var candidate  = k;
+		    }
+		}
+		itemModel.parent = itemModel._id;
+		itemModel._id = make_id();
+		if(!(candidate === itemModel.candidate)){
+		    ui.item.sortable.cancel(); 
+		}
+	    },
+	}
+	
 	$scope.add_post = function(post){
 	    console.log("add_post", post);
 	    
@@ -143,6 +166,11 @@
 			post: {'candidate': candidate}
 		    });
 		}
+		scope.sortableOptions = {
+		    //recieve: function(e, ui) { console.log(ui.item.toString()) },
+		    axis: 'y'
+		};
+
 	    }
 	};
     });
@@ -169,25 +197,6 @@
 	    templateUrl: 'post_template.html',
 	    link: function(scope, element, attrs) {
 		scope.post = scope.data
-		var el = element[0];		
-		el.addEventListener(
-		    'dragstart',
-		    function(e) {
-			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData('post', scope.post);
-			return false;
-		    },
-		    false
-		);
-		
-		el.addEventListener(
-		    'dragend',
-		    function(e) {
-			console.log("dragend");
-			return false;
-		    },
-		    false
-		);
 	    }
 	};
     });
@@ -196,14 +205,15 @@
 	return{
 	    restrict: 'E',
 	    scope: {
-		mode: '@',
+		mode: '=',
 		post: '=',
 		add_post: '&addPost',
 		callback: '&callback'
 	    },
 	    templateUrl: 'post_editor_template.html',
 	    link: function(scope, element, attrs) {
-		if((!scope.post && (scope.mode == 'edit'|| scope.mode=='clone'))|| !scope.mode){
+		console.log('post and mode', scope.post, scope.mode);
+		if((!scope.post && (scope.mode == 'edit'|| scope.mode=='clone')) || !scope.mode){
 		    scope.mode == scope.mode||'new';
 		}
 		scope.n_post = scope.post||{};		
@@ -243,6 +253,8 @@
   <div ng-controller='CandidateListController'>
     <button class="button" ng-click="openAddCandidateModal()"">Add candidate</button>
     <button class="button" ng-click="openAddPostModal()"">Add post</button>
+
+    
     <script type="text/ng-template" id="AddCandidateModal.html">
       <div class="modal-header">
         <h3 class="modal-title">Choose a candidate</h3>
@@ -267,11 +279,19 @@
 	<post-editor post="post" mode="mode"  add-post="add_post(n_post)" callback="ok()"></post-editor>
       </div>
     </script>
-
-
-    <div class="board-canvas">
-      <board></board>
+    
+    <div class="page_container">
+      <div ui-sortable="feedSortableOptions" ng-model="feed_posts" id="user_feed" class="feed" >
+	<div  ng-repeat="post in feed_posts">
+	  <post data="post"></post>
+	</div>
+      </div>
+      
+      <div class="board-canvas">
+	<board></board>
+      </div>
     </div>
+
   </div>
 
 </body>

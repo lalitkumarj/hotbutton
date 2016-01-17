@@ -1,9 +1,11 @@
 <div class="board">
   <div ng-repeat="(candidate,cand_posts) in posts" class="candidate-column">
     <candidate data="full_candidates[candidate]"></candidate>
-    <div ng-repeat="post in cand_posts">
-      <post data="post"></post>
+    <div ui-sortable="sortableOptions" ng-model="cand_posts" class="cand_post_list">
+      <div ng-repeat="post in cand_posts">
+	<post data="post"></post>
+      </div>
     </div>
-    <button class="button" ng-click="addPostCandidate(candidate)">Add post</button>
+    <div class="add_post" ng-click="addPostCandidate(candidate)">Add post</div>
   </div>
 </div>

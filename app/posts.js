@@ -40,3 +40,47 @@ var posts = {
 	"sources":[{"source1":"www.foxnews.com"}]
     }]
 };
+
+
+var feed_posts = [
+    {"_id":"11",
+	"candidate":"Hillary Clinton",
+	"issue":"Foreign Policy",
+	"score":-5,
+	"parent": null,
+	"text": "Transfer Post 1",
+	"sources" : ["www.cnn.com"]
+    },
+    {"_id": "13",
+	"candidate":"Hillary Clinton",
+	"issue":"Personal Hygiene",
+	"score": 5,
+	"parent": null,
+	"text": "Transfer Post 2",
+	"sources":["www.bedbathandbeyond.com", "http://www.indulgespa.net/"]
+    },
+    {"_id": "12",
+	"candidate":"Bernie Sanders",
+	"issue":"Economy",
+	"score": -2,
+	"parent": null,
+	"text": "Transfer Post 3",
+	"sources":["www.wsj.com"]
+    },
+    {"_id": "14",
+	"candidate":"Donald Trump",
+	"issue":"Personal Hygiene",
+	"score": -2,
+	"parent": null,
+	"text": "Transfer Post 4",
+	"sources":["www.bbc.com", "http://www.cnn.com"]
+    },
+    {"_id":"15",
+	"candidate":"Ted Cruz",
+	"issue":"Immigration",
+	"score":3,
+	"parent":null,
+	"text": "Transfer Post 5",
+	"sources":[{"source1":"www.foxnews.com"}]
+    }
+];
