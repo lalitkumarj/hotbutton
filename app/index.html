@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css">
   <!-- https://github.com/angular-ui/ui-sortable -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="bower_components/satellizer/satellizer.js"></script>
   <script src="bower_components/jquery-ui/jquery-ui.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
@@ -68,7 +69,7 @@
 	}
     };                                  
     
-    hotButtonApp.controller('CandidateListController', ['$scope', '$uibModal', 'addPostModal', function($scope, $uibModal, addPostModal) {                     
+    hotButtonApp.controller('CandidateListController', ['$scope', '$uibModal', 'addPostModal', '$http', function($scope, $uibModal, addPostModal, $http) {                     
 	$scope.full_candidates = full_candidates;
 	$scope.candidates = [];
 	$scope.feed_posts = feed_posts;
@@ -79,6 +80,18 @@
 	    }
 	};
 
+	$scope.getUserBoard = function(user_id){
+	    $http({
+		method: 'POST',
+		url: '/get_user_board',
+		data: {'user_id':user_id}
+	    }).then(function successCallback(response) {
+		console.log("post success");
+	    }, function errorCallback(response) {
+		console.log("post failure");
+	    });
+	}
+	
 	$scope.openAddCandidateModal = function () {
 	    var modalInstance = $uibModal.open({
 		animation: true,
@@ -253,7 +266,7 @@
   <div ng-controller='CandidateListController'>
     <button class="button" ng-click="openAddCandidateModal()"">Add candidate</button>
     <button class="button" ng-click="openAddPostModal()"">Add post</button>
-
+    <button class="button" ng-click="getUserBoard('007')">Get User</button>
     
     <script type="text/ng-template" id="AddCandidateModal.html">
       <div class="modal-header">
