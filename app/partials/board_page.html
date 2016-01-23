@@ -1,0 +1,47 @@
+<div ng-controller='BoardController'>
+  <div> {{user.displayName}} </div>
+  <img ng-src="{{user.picture}}" height="100px"></img>
+
+  <button class="button" ng-click="openAddCandidateModal()"">Add candidate</button>
+  <button class="button" ng-click="openAddPostModal()"">Add post</button>
+  <button class="button" ng-click="getUserBoard('007')">Get User</button>
+  
+  <script type="text/ng-template" id="AddCandidateModal.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Choose a candidate</h3>
+    </div>
+    <div class="modal-body">
+      <ul>
+        <li ng-repeat="(name, candidate) in full_candidates">
+	  <candidate data="candidate" ng-click="ok(); addCandidate(name);"></candidate>
+        </li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="AddPostModal.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Add a post</h3>
+    </div>
+    <div class="modal-body">
+      <post-editor post="post" mode="mode"  add-post="addPost(n_post)" callback="ok()"></post-editor>
+    </div>
+  </script>
+  
+  <div class="page_container">
+    <div ui-sortable="feedSortableOptions" ng-model="feed_posts" id="user_feed" class="feed" >
+      <div  ng-repeat="post in feed_posts">
+	<post data="post"></post>
+      </div>
+    </div>
+    
+    <div class="board-canvas">
+      <board></board>
+    </div>
+  </div>
+
+</div>
+
