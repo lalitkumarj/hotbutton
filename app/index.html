@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="hotButtonApp" class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" ng-app="HotButtonApp" class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,300 +12,44 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="bower_components/bootstrap-css/css/bootstrap.min.css">
   <!-- https://github.com/angular-ui/ui-sortable -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="bower_components/satellizer/satellizer.js"></script>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
   <script src="bower_components/jquery-ui/jquery-ui.js"></script>
   <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script> 
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="bower_components/angular-ui-sortable/sortable.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/satellizer/satellizer.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>
-  <script src="posts.js"></script>
-  <script src="utils.js"></script>
- </head>
+  <!-- Application scripts -->
+  <script src="app.js"></script>
+  <script src="controllers/BoardController.js"></script>
+  <script src="controllers/LoginController.js"></script>
+  <script src="controllers/LogoutController.js"></script>
+  <script src="controllers/NavbarController.js"></script>
+  <script src="controllers/AddPostModalInstanceCtrl.js"></script>
+  <script src="controllers/AddCandidateModalInstanceCtrl.js"></script>
+  <script src="utils/utils.js"></script>
+</head>
 <body>
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
-
-  <!--<div ng-view></div> -->
-
-  <!-- <div>Angular seed app: v<span app-version></span></div> -->
-
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
-  
-  <style>
-  </style>
-  
-  <script>
-    var hotButtonApp = angular.module('hotButtonApp', ['ui.bootstrap', 'ui.sortable']);
-    
-    var full_candidates = {
-	'Hillary Clinton':{
-	    name:'Hillary Clinton',
-	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Secretary_Clinton_8x10_2400_1.jpg/800px-Secretary_Clinton_8x10_2400_1.jpg'
-	},         
-	'Bernie Sanders':{
-	    name:'Bernie Sanders',
-	    image:'https://upload.wikimedia.org/wikipedia/commons/d/de/Bernie_Sanders.jpg'
-	},                                  
-	'Jeb Bush':{
-	    name:'Jeb Bush',
-	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Jeb_Bush_at_Southern_Republican_Leadership_Conference_May_2015_by_Vadon_02.jpg/800px-Jeb_Bush_at_Southern_Republican_Leadership_Conference_May_2015_by_Vadon_02.jpg'
-	},
-	'Donald Trump':{
-	    name:'Donald Trump',
-	    image:'https://upload.wikimedia.org/wikipedia/commons/b/b3/Donald_August_19_%28cropped%29.jpg'
-	},
-	'Ted Cruz':{
-	    name:'Ted Cruz',
-	    image:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ted_Cruz%2C_official_portrait%2C_113th_Congress.jpg/1280px-Ted_Cruz%2C_official_portrait%2C_113th_Congress.jpg'
-	}
-    };                                  
-    
-    hotButtonApp.controller('CandidateListController', ['$scope', '$uibModal', 'addPostModal', '$http', function($scope, $uibModal, addPostModal, $http) {                     
-	$scope.full_candidates = full_candidates;
-	$scope.candidates = [];
-	$scope.feed_posts = feed_posts;
-	$scope.posts = posts;
-	$scope.add_candidate = function (name) {
-	    if(!(name in $scope.posts)){
-		$scope.posts[name]=[];
-	    }
-	};
-
-	$scope.getUserBoard = function(user_id){
-	    $http({
-		method: 'POST',
-		url: '/get_user_board',
-		data: {'user_id':user_id}
-	    }).then(function successCallback(response) {
-		console.log("post success");
-	    }, function errorCallback(response) {
-		console.log("post failure");
-	    });
-	}
-	
-	$scope.openAddCandidateModal = function () {
-	    var modalInstance = $uibModal.open({
-		animation: true,
-		templateUrl: 'AddCandidateModal.html',
-		controller: 'AddCandidateModalInstanceCtrl',
-		bindToControlle:true,
-		scope:$scope
-	    });
-	};
-	
-	$scope.openAddPostModal = function () {
-	    var modalInstance = addPostModal;
-	    modalInstance.open({
-		scope: $scope,
-		mode: 'new'
-	    });
-	};
-
-	$scope.feedSortableOptions = {
-	    connectWith: '.cand_post_list',
-	    update: function(ev, ui) {
-		var originNgModel = ui.item.sortable.sourceModel;
-		var targetNgModel = ui.item.sortable.droptargetModel;
-		var itemModel = originNgModel[ui.item.sortable.index];
-		for(var k in $scope.posts){
-		    console.log(k)
-		    if(targetNgModel == $scope.posts[k]){
-			var candidate  = k;
-		    }
-		}
-		itemModel.parent = itemModel._id;
-		itemModel._id = make_id();
-		if(!(candidate === itemModel.candidate)){
-		    ui.item.sortable.cancel(); 
-		}
-	    },
-	}
-	
-	$scope.add_post = function(post){
-	    console.log("add_post", post);
-	    
-	    if(!(post.candidate in $scope.posts)){
-		$scope.posts[post.candidate] = [];
-		$scope.posts[post.candidate].push(post);
-	    }
-	    var posts = $scope.posts[post.candidate];
-	    console.log("cand posts", posts);
-	    for(var i=0; i < posts.length; i++){
-		if(posts[i]._id == post._id){
-		    posts[i] = post;
-		    return;
-		}
-	    }
-	    $scope.posts[post.candidate].push(post);
-	    console.log($scope.posts);
-	} 	
-    }]);
-
-    hotButtonApp.factory('addPostModal', ['$uibModal', function($uibModal) {
-	var modal = {};
-	modal.open = function(params){
-	    var modalInstance = $uibModal.open({
-		animation: true,
-		templateUrl: 'AddPostModal.html',
-		controller: 'AddPostModalInstanceCtrl',
-		bindToControlle:true,
-		scope: params.scope});
-	    modalInstance.post = params.post || {};
-	    modalInstance.mode = params.mode || 'new';
-	};
-	return modal;
-    }]);
-
-    hotButtonApp.directive('board', function($uibModal, addPostModal){
-	return{
-	    restrict: 'E',
-	    scope: true,
-	    templateUrl: 'board_template.html',
-	    link: function(scope, element, attrs) {
-		scope.addPostCandidate = function(candidate){
-		    var modalInstance = addPostModal;
-		    modalInstance.open({
-			scope: scope,
-			mode: 'new',
-			post: {'candidate': candidate}
-		    });
-		}
-		scope.sortableOptions = {
-		    //recieve: function(e, ui) { console.log(ui.item.toString()) },
-		    axis: 'y'
-		};
-
-	    }
-	};
-    });
-    
-    hotButtonApp.directive('candidate', function() {
-	return{
-	    restrict: 'E',
-	    scope: {
-		data: '='
-	    },
-	    templateUrl: 'candidate_template.html',
-	    link: function(scope, element, attrs) {
-		scope.candidate = scope.data
-	    }
-	};
-    });
-
-    hotButtonApp.directive('post', function() {
-	return{
-	    restrict: 'E',
-	    scope:{
-		data: '='
-	    },
-	    templateUrl: 'post_template.html',
-	    link: function(scope, element, attrs) {
-		scope.post = scope.data
-	    }
-	};
-    });
-
-    hotButtonApp.directive('postEditor', function() {
-	return{
-	    restrict: 'E',
-	    scope: {
-		mode: '=',
-		post: '=',
-		add_post: '&addPost',
-		callback: '&callback'
-	    },
-	    templateUrl: 'post_editor_template.html',
-	    link: function(scope, element, attrs) {
-		console.log('post and mode', scope.post, scope.mode);
-		if((!scope.post && (scope.mode == 'edit'|| scope.mode=='clone')) || !scope.mode){
-		    scope.mode == scope.mode||'new';
-		}
-		scope.n_post = scope.post||{};		
-		if(scope.mode == 'edit'){
-		    scope.n_post._id = scope.post._id;
-		    scope.n_post.parent = scope.post.parent;
-		} else if(scope.mode == 'clone'){
-		    scope.n_post._id = make_id();
-		    scope.n_post.parent = scope.post._id;
-		} else if(scope.mode == 'new'){
-		    scope.n_post._id = make_id();
-		    scope.n_post.parent = null;
-		}
-		scope.save_post = function(){
-		    scope.add_post({'n_post':scope.n_post});
-		    scope.callback({'n_post':scope.n_post});
-		}
-	    }
-	};
-    });
-
-    hotButtonApp.controller('AddCandidateModalInstanceCtrl', function ($scope, $uibModalInstance) {
-	$scope.ok = function () {
-	    $uibModalInstance.close();
-	};
-    });
-
-    hotButtonApp.controller('AddPostModalInstanceCtrl', function ($scope, $uibModalInstance) {
-	$scope.post = $uibModalInstance.post;
-	$scope.mode = $uibModalInstance.mode;
-	$scope.ok = function () {
-	    $uibModalInstance.close();
-	};
-    });
-  </script>
-  
-  <div ng-controller='CandidateListController'>
-    <button class="button" ng-click="openAddCandidateModal()"">Add candidate</button>
-    <button class="button" ng-click="openAddPostModal()"">Add post</button>
-    <button class="button" ng-click="getUserBoard('007')">Get User</button>
-    
-    <script type="text/ng-template" id="AddCandidateModal.html">
-      <div class="modal-header">
-        <h3 class="modal-title">Choose a candidate</h3>
-      </div>
-      <div class="modal-body">
-        <ul>
-          <li ng-repeat="(name, candidate) in full_candidates">
-	    <candidate data="candidate" ng-click="ok(); add_candidate(name);"></candidate>
-          </li>
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-      </div>
-    </script>
-
-    <script type="text/ng-template" id="AddPostModal.html">
-      <div class="modal-header">
-        <h3 class="modal-title">Add a post</h3>
-      </div>
-      <div class="modal-body">
-	<post-editor post="post" mode="mode"  add-post="add_post(n_post)" callback="ok()"></post-editor>
-      </div>
-    </script>
-    
-    <div class="page_container">
-      <div ui-sortable="feedSortableOptions" ng-model="feed_posts" id="user_feed" class="feed" >
-	<div  ng-repeat="post in feed_posts">
-	  <post data="post"></post>
-	</div>
-      </div>
-      
-      <div class="board-canvas">
-	<board></board>
-      </div>
-    </div>
-
+  <div ng-controller="NavbarController" class="navbar navbar-default navbar-static-top">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="/">HotButton</a>
   </div>
-
+  <ul class="nav navbar-nav">
+    <li><a href="/#/">Home</a></li>
+    <li ng-if="isAuthenticated()"><a href="/#/board">Board</a></li>
+  </ul>
+  <ul ng-if="!isAuthenticated()" class="nav navbar-nav pull-right">
+    <li><a href="/#/login">Login</a></li>
+  </ul>
+  <ul ng-if="isAuthenticated()" class="nav navbar-nav pull-right">
+    <li><a href="/#/logout">Logout</a></li>
+  </ul>
+  </div>
+  <div ui-view></div>
+  
 </body>
 </html>
